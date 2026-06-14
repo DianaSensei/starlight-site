@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tools = [
+  {
+    name: 'Cron Generator',
+    desc: 'Build cron expressions with a visual editor and get human-readable output. Useful for scheduling jobs without memorizing the syntax.',
+    tags: ['scheduling'],
+  },
+  {
+    name: 'Text Transformer',
+    desc: 'Convert text between single-line, multi-line, array, and case formats. Supports camelCase, snake_case, PascalCase, kebab-case, and more.',
+    tags: ['text'],
+  },
+  {
+    name: 'Text Counter',
+    desc: 'Count characters, words, lines, and sentences in real time. Useful for checking lengths before submitting forms or writing docs.',
+    tags: ['text'],
+  },
+  {
+    name: 'Color Picker',
+    desc: 'Pick colors and instantly get HEX, RGB, and HSL values. Useful for designers and frontend developers.',
+    tags: ['design'],
+  },
+  {
+    name: 'Encoder / Decoder',
+    desc: 'Encode and decode using Base64, URL encoding, HTML entities, Hex, and Morse code — all offline.',
+    tags: ['encoding'],
+  },
+  {
+    name: 'Hash & Encrypt',
+    desc: 'Compute MD5, SHA-1, SHA-256, and SHA-512 hashes. AES encryption and decryption also available.',
+    tags: ['security', 'encoding'],
+  },
+  {
+    name: 'Date / Time',
+    desc: 'Convert Unix timestamps, diff dates, and format across timezones. Supports ISO 8601, RFC 2822, and human-readable formats.',
+    tags: ['time'],
+  },
+  {
+    name: 'JSON Formatter',
+    desc: 'Beautify, minify, stringify, and explore JSON in a collapsible tree view. Great for reading API responses.',
+    tags: ['data'],
+  },
+  {
+    name: 'JWT Debugger',
+    desc: 'Decode and inspect JWT header, payload, and signature. No server needed — works entirely in the app.',
+    tags: ['security'],
+  },
+  {
+    name: 'Regex Tester',
+    desc: 'Test regex patterns against sample text with live match highlighting. Supports flags (g, i, m, s).',
+    tags: ['text'],
+  },
+  {
+    name: 'Text Diff',
+    desc: 'Side-by-side and inline text comparison. Highlights additions, deletions, and changes at the word level.',
+    tags: ['text'],
+  },
+  {
+    name: 'QR Code',
+    desc: 'Generate QR codes for URLs, text, or contact cards. Supports custom frames and logo overlays.',
+    tags: ['generate'],
+  },
+  {
+    name: 'Markdown',
+    desc: 'Live markdown preview as you type. Supports CommonMark spec including tables, code blocks, and footnotes.',
+    tags: ['text'],
+  },
+  {
+    name: 'Deduplicate',
+    desc: 'Remove duplicate lines or array items. Preserves order, and lets you choose case-sensitive vs insensitive matching.',
+    tags: ['text'],
+  },
+  {
+    name: 'Checksum',
+    desc: 'Compute MD5 and SHA checksums for any file. Useful for verifying downloads.',
+    tags: ['security'],
+  },
+  {
+    name: 'Image ↔ Base64',
+    desc: 'Encode images to Base64 strings or decode Base64 back to an image. Supports PNG, JPEG, GIF, WebP.',
+    tags: ['encoding', 'design'],
+  },
+  {
+    name: 'Generator',
+    desc: 'Generate UUIDs (v1/v4), random numbers in configurable ranges, and random text with custom alphabets.',
+    tags: ['generate'],
+  },
+];
+
+const allTags = ['all', ...Array.from(new Set(tools.flatMap(t => t.tags))).sort()];
+---
+
+<Layout title="Tools — DevTool" description="All 17 developer utilities included in DevTool.">
+  <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
+    <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Tools</h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-10">17 utilities, all running locally with no internet required.</p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {tools.map(tool => (
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-slate-300 dark:hover:border-slate-700 transition-colors bg-white dark:bg-slate-900/30">
+          <p class="font-medium text-slate-900 dark:text-white mb-2">{tool.name}</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-3">{tool.desc}</p>
+          <div class="flex flex-wrap gap-1">
+            {tool.tags.map(tag => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{tag}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>

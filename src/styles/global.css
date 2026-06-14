@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  html {
+    @apply antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-medium tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900 dark:bg-brand-800 dark:text-brand-100;
+  }
+}
+
+@layer utilities {
+  .prose-blog h2 { @apply text-xl font-medium mt-8 mb-3 text-slate-900 dark:text-slate-100; }
+  .prose-blog h3 { @apply text-lg font-medium mt-6 mb-2 text-slate-900 dark:text-slate-100; }
+  .prose-blog p  { @apply mb-4 leading-relaxed text-slate-700 dark:text-slate-300; }
+  .prose-blog a  { @apply text-brand-600 dark:text-brand-400 underline underline-offset-2; }
+  .prose-blog ul { @apply list-disc list-inside mb-4 text-slate-700 dark:text-slate-300 space-y-1; }
+  .prose-blog ol { @apply list-decimal list-inside mb-4 text-slate-700 dark:text-slate-300 space-y-1; }
+  .prose-blog code {
+    @apply font-mono text-sm bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded;
+  }
+  .prose-blog pre {
+    @apply font-mono text-sm bg-slate-900 dark:bg-slate-800 text-slate-100 p-4 rounded-xl overflow-x-auto mb-4;
+  }
+  .prose-blog pre code { @apply bg-transparent p-0; }
+  .prose-blog blockquote {
+    @apply border-l-2 border-brand-400 pl-4 italic text-slate-600 dark:text-slate-400 mb-4;
+  }
+}

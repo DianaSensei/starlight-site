@@ -1,0 +1,262 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tools = [
+  { icon: '⏱', name: 'Cron Generator', desc: 'Build cron expressions with a visual editor and get human-readable output.' },
+  { icon: '✦', name: 'Text Transformer', desc: 'Convert text between case formats: camelCase, snake_case, PascalCase, kebab-case, and more.' },
+  { icon: '📊', name: 'Text Counter', desc: 'Count characters, words, lines, and sentences in real time.' },
+  { icon: '🎨', name: 'Color Picker', desc: 'Pick colors and instantly get HEX, RGB, and HSL values.' },
+  { icon: '🔒', name: 'Encoder / Decoder', desc: 'Encode and decode Base64, URL, HTML entities, Hex, and Morse code — all offline.' },
+  { icon: '#', name: 'Hash & Encrypt', desc: 'Compute MD5, SHA-1/256/512 hashes. AES encryption and decryption included.' },
+  { icon: '🕐', name: 'Date / Time', desc: 'Convert Unix timestamps, diff dates, and format across timezones.' },
+  { icon: '{}', name: 'JSON Formatter', desc: 'Beautify, minify, stringify, and explore JSON in a collapsible tree view.' },
+  { icon: '🔑', name: 'JWT Debugger', desc: 'Decode and inspect JWT header, payload, and signature — no server needed.' },
+  { icon: '.*', name: 'Regex Tester', desc: 'Test regex patterns against sample text with live match highlighting. Supports g, i, m, s flags.' },
+  { icon: '↔', name: 'Text Diff', desc: 'Side-by-side and inline text comparison with word-level highlighting.' },
+  { icon: '▣', name: 'QR Code', desc: 'Generate QR codes for URLs, text, or contact cards with custom frames and logos.' },
+  { icon: 'M↓', name: 'Markdown', desc: 'Live markdown preview as you type. Supports CommonMark, tables, code blocks, footnotes.' },
+  { icon: '◈', name: 'Deduplicate', desc: 'Remove duplicate lines or array items. Case-sensitive or insensitive, order preserved.' },
+  { icon: '∑', name: 'Checksum', desc: 'Compute MD5 and SHA checksums for any file — useful for verifying downloads.' },
+  { icon: '⬡', name: 'Image ↔ Base64', desc: 'Encode images to Base64 or decode Base64 back to image. Supports PNG, JPEG, GIF, WebP.' },
+  { icon: '⚙', name: 'Generator', desc: 'Generate UUIDs (v1/v4), random numbers in configurable ranges, and random text.' },
+];
+
+const features = [
+  { label: 'Fully offline', desc: 'Everything runs locally. No requests leave your machine.' },
+  { label: 'No accounts', desc: 'Open the app and use it. Nothing to sign up for.' },
+  { label: 'No telemetry', desc: 'Zero tracking, analytics, or crash reporting.' },
+  { label: 'Fast & lightweight', desc: 'Native desktop app — instant launch, low memory.' },
+  { label: 'MIT licensed', desc: 'Open source. Audit it, fork it, ship it.' },
+  { label: 'Always growing', desc: 'New utilities added with each release.' },
+];
+
+const platforms = [
+  {
+    id: 'macos',
+    name: 'macOS',
+    versions: '11 (Big Sur)+',
+    format: '.dmg · Apple Silicon',
+    // Apple logo (MDI)
+    iconPath: 'M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.78,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.91,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z',
+    bg: 'bg-slate-100 dark:bg-slate-800',
+    iconClass: 'text-slate-700 dark:text-slate-200',
+  },
+  {
+    id: 'windows',
+    name: 'Windows',
+    versions: '10 / 11',
+    format: '.msi · .exe (NSIS)',
+    // Windows logo — 4-pane flag (MDI)
+    iconPath: 'M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L11,10.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L11,20.84V13.1L20,13.25Z',
+    bg: 'bg-blue-50 dark:bg-blue-900/30',
+    iconClass: 'text-blue-600 dark:text-blue-400',
+  },
+  {
+    id: 'linux',
+    name: 'Linux',
+    versions: 'Ubuntu 22.04+',
+    format: '.AppImage · .deb',
+    // Tux penguin (MDI)
+    iconPath: 'M14.62,8.35C14.2,8.63 13.33,9.32 13.13,9.57C12.93,9.82 13.2,10.26 13.33,10.43C13.55,10.72 13.87,11.25 14.54,11.67C14.62,11.72 14.71,11.76 14.81,11.77C14.97,11.78 15.08,11.72 15.17,11.67C15.84,11.25 16.16,10.72 16.38,10.43C16.51,10.26 16.78,9.82 16.58,9.57C16.38,9.32 15.51,8.63 15.09,8.35C14.97,8.27 14.85,8.23 14.73,8.23C14.62,8.23 14.5,8.27 14.38,8.35M10.09,8.35L9.58,8.35C9.19,8.27 9.08,8.23 8.96,8.23C8.85,8.23 8.72,8.27 8.61,8.35C8.19,8.63 7.32,9.32 7.12,9.57C6.92,9.82 7.19,10.26 7.32,10.43C7.54,10.72 7.86,11.25 8.53,11.67C8.62,11.72 8.73,11.76 8.83,11.77C8.99,11.78 9.1,11.72 9.19,11.67C9.86,11.25 10.18,10.72 10.4,10.43C10.53,10.26 10.8,9.82 10.6,9.57C10.4,9.32 9.53,8.63 9.11,8.35H10.09M12,2A5,5 0 0,0 7,7C7,8.42 7.58,9.71 8.5,10.65V13H7A2,2 0 0,0 5,15V16H4A1,1 0 0,0 3,17V19A1,1 0 0,0 4,20H20A1,1 0 0,0 21,19V17A1,1 0 0,0 20,16H19V15A2,2 0 0,0 17,13H15.5V10.65C16.42,9.71 17,8.42 17,7A5,5 0 0,0 12,2M15.5,15V18H8.5V15H15.5Z',
+    bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+    iconClass: 'text-yellow-600 dark:text-yellow-400',
+  },
+];
+---
+
+<Layout
+  title="DevTool — Offline developer utilities"
+  description="DevTool packs a growing collection of offline developer utilities into one fast, clean desktop app. No network, no telemetry, no accounts."
+>
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-4 pt-20 pb-16 text-center">
+    <div class="inline-flex items-center gap-2 text-xs font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 px-3 py-1.5 rounded-full mb-6">
+      <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+      <span id="hero-version" class="opacity-0 transition-opacity duration-200"></span> · MIT License
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl font-medium text-slate-900 dark:text-white mb-4 leading-tight">
+      Offline developer utilities.<br class="hidden sm:block" />
+      One fast, clean app.
+    </h1>
+
+    <p class="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed">
+      Text processing, encoding, color tools, JWT debugger, and more — all run locally.
+      No network, no telemetry, no accounts.
+    </p>
+
+    <div class="flex flex-wrap gap-3 justify-center mb-4">
+      <a
+        id="download-btn"
+        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download <span id="download-label" class="opacity-0 transition-opacity duration-200"></span>
+      </a>
+      <a
+        href="https://github.com/DianaSensei/developer-desktop-utils"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-sm transition-colors"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <p class="text-xs text-slate-400 dark:text-slate-500">macOS · Windows · Linux</p>
+  </section>
+
+  <!-- Features -->
+  <section class="max-w-5xl mx-auto px-4 pb-16">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6">Why DevTool</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {features.map(f => (
+        <div class="flex gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/30">
+          <svg class="w-4 h-4 text-brand-500 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <div>
+            <p class="text-sm font-medium text-slate-900 dark:text-white mb-0.5">{f.label}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{f.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section class="max-w-5xl mx-auto px-4 pb-16">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6">Tools</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {tools.map(tool => (
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-slate-300 dark:hover:border-slate-700 transition-colors bg-white dark:bg-slate-900/30">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-2xl font-mono w-9 shrink-0 text-center">{tool.icon}</span>
+            <p class="font-medium text-slate-900 dark:text-white leading-tight">{tool.name}</p>
+          </div>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed pl-12">{tool.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Platform support -->
+  <section class="border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+    <div class="max-w-5xl mx-auto px-4 py-14">
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-8">Platform support</h2>
+      <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        {platforms.map(p => (
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col gap-4">
+            <div class={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${p.bg}`}>
+              <svg viewBox="0 0 24 24" fill="currentColor" class={`w-6 h-6 ${p.iconClass}`}>
+                <path d={p.iconPath} />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-slate-900 dark:text-white mb-0.5">{p.name}</p>
+              <p class="text-xs text-slate-400 dark:text-slate-500 mb-2">{p.versions}</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400 font-mono mb-4">{p.format}</p>
+              <div id={`dl-${p.id}`} class="flex flex-col gap-2"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl text-sm text-amber-800 dark:text-amber-300">
+        <p class="font-medium mb-1">macOS — app not yet notarized</p>
+        <p class="text-amber-700 dark:text-amber-400 mb-3 text-sm leading-relaxed">
+          macOS Gatekeeper may block the app on first launch because it isn't signed with an Apple notarization certificate.
+          To allow it, move the app to <code class="font-mono text-xs bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">/Applications</code> first, then run this command once in Terminal:
+        </p>
+        <code class="block font-mono text-xs bg-amber-100 dark:bg-amber-900/40 px-4 py-3 rounded-lg">xattr -cr /Applications/DevTool.app</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA -->
+  <section class="max-w-5xl mx-auto px-4 py-20 text-center">
+    <h2 class="text-2xl font-medium text-slate-900 dark:text-white mb-3">Ready to try it?</h2>
+    <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm">Free, open source, and runs entirely on your machine.</p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      <a
+        id="cta-download-btn"
+        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download <span id="cta-download-label" class="opacity-0 transition-opacity duration-200"></span>
+      </a>
+      <a
+        href="https://github.com/DianaSensei/developer-desktop-utils/releases"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-sm transition-colors"
+      >
+        All releases →
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const REPO = 'DianaSensei/developer-desktop-utils';
+  const RAW = `https://raw.githubusercontent.com/${REPO}/main/src-tauri/tauri.conf.json`;
+  const DL_BASE = `https://github.com/${REPO}/releases/download`;
+
+  const dlIcon = `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+  const btnClass = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
+
+  function addBtn(containerId: string, label: string, url: string) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.className = btnClass;
+    a.innerHTML = `${dlIcon}<span>${label}</span>`;
+    container.appendChild(a);
+  }
+
+  (async () => {
+    try {
+      const res = await fetch(RAW);
+      if (!res.ok) return;
+      const { version, productName } = await res.json();
+      if (!version || !productName) return;
+
+      const tag = `v${version}`;
+      const base = `${DL_BASE}/${tag}/${productName}_${version}`;
+
+      // Update version badges
+      for (const id of ['hero-version', 'download-label', 'cta-download-label']) {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = tag; el.classList.remove('opacity-0'); }
+      }
+      const releaseUrl = `https://github.com/${REPO}/releases/tag/${tag}`;
+      (document.getElementById('download-btn') as HTMLAnchorElement | null)?.setAttribute('href', releaseUrl);
+      (document.getElementById('cta-download-btn') as HTMLAnchorElement | null)?.setAttribute('href', releaseUrl);
+
+      // Add download buttons for each known asset
+      addBtn('dl-macos',   '.dmg',        `${base}_aarch64.dmg`);
+      addBtn('dl-windows', '.msi',        `${base}_x64_en-US.msi`);
+      addBtn('dl-windows', '.exe (NSIS)', `${base}_x64-setup.exe`);
+      addBtn('dl-linux',   '.AppImage',   `${base}_amd64.AppImage`);
+      addBtn('dl-linux',   '.deb',        `${base}_amd64.deb`);
+    } catch (e) {
+      console.warn('[DevTool]', e);
+    }
+  })();
+</script>
