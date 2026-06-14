@@ -1,7 +1,7 @@
 ---
 title: "Building a cross-platform desktop app with Tauri 2"
 description: "What I learned migrating from Tauri v1 to v2, and why the new permission model is worth the friction."
-pubDate: 2026-06-01
+pubDate: 2026-07-01
 tags: ["tauri", "rust", "desktop"]
 draft: false
 ---

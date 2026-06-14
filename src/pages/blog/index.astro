@@ -4,8 +4,19 @@ import Layout from '../../layouts/Layout.astro';
 
 const base = import.meta.env.BASE_URL;
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+// Exclude permanently hidden and draft posts at build time.
+// Future-dated and expired posts are included in the data but filtered client-side.
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft && !data.hidden))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const postsJson = JSON.stringify(allPosts.map(p => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  pubDate: p.data.pubDate.toISOString(),
+  expiryDate: p.data.expiryDate ? p.data.expiryDate.toISOString() : null,
+  tags: p.data.tags,
+})));
 ---
 
 <Layout title="Blog — DevTool" description="Writing about Tauri, developer tooling, and desktop app development.">
@@ -13,38 +24,50 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Blog</h1>
     <p class="text-slate-500 dark:text-slate-400 mb-10">Writing about Tauri, developer tooling, and building things.</p>
 
-    {posts.length === 0 ? (
-      <div class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500">
-        No posts yet — check back soon.
-      </div>
-    ) : (
-      <div class="divide-y divide-slate-200 dark:divide-slate-800">
-        {posts.map(post => (
+    <div id="posts-list"></div>
+    <div id="posts-empty" class="hidden border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500">
+      No posts yet — check back soon.
+    </div>
+  </div>
+</Layout>
+
+<script define:vars={{ postsJson, base }}>
+  const posts = JSON.parse(postsJson);
+  const now = new Date();
+
+  const visible = posts.filter(p => {
+    const pub = new Date(p.pubDate);
+    const exp = p.expiryDate ? new Date(p.expiryDate) : null;
+    return pub <= now && (!exp || exp > now);
+  });
+
+  const list = document.getElementById('posts-list');
+  const empty = document.getElementById('posts-empty');
+
+  if (visible.length === 0) {
+    empty.classList.remove('hidden');
+  } else {
+    list.innerHTML = `<div class="divide-y divide-slate-200 dark:divide-slate-800">${
+      visible.map(p => {
+        const date = new Date(p.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const tags = p.tags.map(t => `<span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${t}</span>`).join('');
+        return `
           <article class="py-6 group">
-            <a href={`${base}/blog/${post.slug}`} class="block">
+            <a href="${base}/blog/${p.slug}" class="block">
               <div class="flex items-start justify-between gap-4">
                 <div>
-                  <h2 class="text-base font-medium text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors mb-1">
-                    {post.data.title}
-                  </h2>
-                  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-2">{post.data.description}</p>
+                  <h2 class="text-base font-medium text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors mb-1">${p.title}</h2>
+                  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-2">${p.description}</p>
                   <div class="flex items-center gap-3">
-                    <time class="text-xs text-slate-400 dark:text-slate-500">
-                      {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </time>
-                    <div class="flex gap-1">
-                      {post.data.tags.map(tag => (
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{tag}</span>
-                      ))}
-                    </div>
+                    <time class="text-xs text-slate-400 dark:text-slate-500">${date}</time>
+                    <div class="flex gap-1">${tags}</div>
                   </div>
                 </div>
                 <span class="text-slate-300 dark:text-slate-600 group-hover:text-brand-500 transition-colors text-lg mt-0.5 shrink-0">→</span>
               </div>
             </a>
-          </article>
-        ))}
-      </div>
-    )}
-  </div>
-</Layout>
+          </article>`;
+      }).join('')
+    }</div>`;
+  }
+</script>
