@@ -3,6 +3,6 @@ import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   site: 'https://dianasensei.github.io',
-  base: '/devtool-site',
+  base: '/starlight-site',
   integrations: [tailwind()],
 });
