@@ -1,24 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import DevToolLogo from '../components/DevToolLogo.astro';
 
 const tools = [
-  { icon: '⏱', name: 'Cron Generator', desc: 'Build cron expressions with a visual editor and get human-readable output.' },
-  { icon: '✦', name: 'Text Transformer', desc: 'Convert text between case formats: camelCase, snake_case, PascalCase, kebab-case, and more.' },
-  { icon: '📊', name: 'Text Counter', desc: 'Count characters, words, lines, and sentences in real time.' },
-  { icon: '🎨', name: 'Color Picker', desc: 'Pick colors and instantly get HEX, RGB, and HSL values.' },
-  { icon: '🔒', name: 'Encoder / Decoder', desc: 'Encode and decode Base64, URL, HTML entities, Hex, and Morse code — all offline.' },
-  { icon: '#', name: 'Hash & Encrypt', desc: 'Compute MD5, SHA-1/256/512 hashes. AES encryption and decryption included.' },
-  { icon: '🕐', name: 'Date / Time', desc: 'Convert Unix timestamps, diff dates, and format across timezones.' },
-  { icon: '{}', name: 'JSON Formatter', desc: 'Beautify, minify, stringify, and explore JSON in a collapsible tree view.' },
-  { icon: '🔑', name: 'JWT Debugger', desc: 'Decode and inspect JWT header, payload, and signature — no server needed.' },
-  { icon: '.*', name: 'Regex Tester', desc: 'Test regex patterns against sample text with live match highlighting. Supports g, i, m, s flags.' },
-  { icon: '↔', name: 'Text Diff', desc: 'Side-by-side and inline text comparison with word-level highlighting.' },
-  { icon: '▣', name: 'QR Code', desc: 'Generate QR codes for URLs, text, or contact cards with custom frames and logos.' },
-  { icon: 'M↓', name: 'Markdown', desc: 'Live markdown preview as you type. Supports CommonMark, tables, code blocks, footnotes.' },
-  { icon: '◈', name: 'Deduplicate', desc: 'Remove duplicate lines or array items. Case-sensitive or insensitive, order preserved.' },
-  { icon: '∑', name: 'Checksum', desc: 'Compute MD5 and SHA checksums for any file — useful for verifying downloads.' },
-  { icon: '⬡', name: 'Image ↔ Base64', desc: 'Encode images to Base64 or decode Base64 back to image. Supports PNG, JPEG, GIF, WebP.' },
-  { icon: '⚙', name: 'Generator', desc: 'Generate UUIDs (v1/v4), random numbers in configurable ranges, and random text.' },
+  { icon: '⏱', name: 'Cron Generator',    desc: 'Build and validate cron expressions with a visual editor.' },
+  { icon: '✦', name: 'Text Transformer',  desc: 'Convert case, sort, trim, reverse, and transform text in bulk.' },
+  { icon: 'Aa', name: 'Text Counter',      desc: 'Count characters, words, lines and estimate reading time.' },
+  { icon: '🎨', name: 'Color Picker',      desc: 'Pick colors and convert between HEX, RGB, HSL, and HSV.' },
+  { icon: '{}', name: 'Encoder / Decoder', desc: 'Encode and decode Base64, URL, HTML entities, Hex, Morse, and more.' },
+  { icon: '#',  name: 'Hash & Encrypt',    desc: 'Compute MD5, SHA-1, SHA-256, SHA-512 hashes and AES encrypt/decrypt.' },
+  { icon: '🕐', name: 'Date / Time',       desc: 'Convert timestamps, compare dates, and format in any timezone.' },
+  { icon: '{}', name: 'JSON Formatter',    desc: 'Format, validate, minify, and explore JSON with syntax highlighting.' },
+  { icon: '🔑', name: 'JWT Debugger',      desc: 'Decode and inspect JWT headers and payloads without verification.' },
+  { icon: '.*', name: 'Regex Tester',      desc: 'Test regular expressions with live match highlighting and group capture.' },
+  { icon: '↔', name: 'Text Diff',          desc: 'Compare two text blocks and highlight additions and removals.' },
+  { icon: '▣', name: 'QR Code',            desc: 'Generate QR codes from any text or URL and download as PNG.' },
+  { icon: 'M↓', name: 'Markdown',          desc: 'Live Markdown preview with standard formatting support.' },
+  { icon: '◈', name: 'Deduplicate',        desc: 'Remove duplicate lines or items from any list.' },
+  { icon: '∑', name: 'Checksum',           desc: 'Compute MD5, SHA-1, SHA-256, and SHA-512 checksums for any file.' },
+  { icon: '⬡', name: 'Image ↔ Base64',    desc: 'Convert images to Base64 strings and render Base64 back to images.' },
+  { icon: '⚙', name: 'Generator',          desc: 'Generate UUIDs, random numbers, and text with custom character sets.' },
+  { icon: '⚡', name: 'Kafka Explorer',     desc: 'Browse topics, inspect partitions and offsets, manage consumer groups, and produce messages.' },
 ];
 
 const features = [
@@ -70,6 +72,10 @@ const platforms = [
 >
   <!-- Hero -->
   <section class="max-w-5xl mx-auto px-4 pt-20 pb-16 text-center">
+    <div class="flex justify-center mb-6">
+      <DevToolLogo size={64} class="rounded-2xl shadow-lg shadow-blue-900/20" />
+    </div>
+
     <div class="inline-flex items-center gap-2 text-xs font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 px-3 py-1.5 rounded-full mb-6">
       <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
       <span id="hero-version" class="opacity-0 transition-opacity duration-200"></span> · MIT License
