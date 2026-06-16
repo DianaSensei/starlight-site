@@ -89,8 +89,6 @@ const platforms = [
       <a
         id="download-btn"
         href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
-        target="_blank"
-        rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -189,8 +187,6 @@ const platforms = [
       <a
         id="cta-download-btn"
         href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
-        target="_blank"
-        rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -218,13 +214,19 @@ const platforms = [
   const dlIcon = `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
   const btnClass = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
 
+  function detectPlatform(): 'macos' | 'windows' | 'linux' | null {
+    const ua = navigator.userAgent;
+    if (/Mac/i.test(ua) && !/iPhone|iPad/i.test(ua)) return 'macos';
+    if (/Win/i.test(ua)) return 'windows';
+    if (/Linux/i.test(ua)) return 'linux';
+    return null;
+  }
+
   function addBtn(containerId: string, label: string, url: string) {
     const container = document.getElementById(containerId);
     if (!container) return;
     const a = document.createElement('a');
     a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
     a.className = btnClass;
     a.innerHTML = `${dlIcon}<span>${label}</span>`;
     container.appendChild(a);
@@ -240,16 +242,32 @@ const platforms = [
       const tag = `v${version}`;
       const base = `${DL_BASE}/${tag}/${productName}_${version}`;
 
-      // Update version badges
-      for (const id of ['hero-version', 'download-label', 'cta-download-label']) {
-        const el = document.getElementById(id);
-        if (el) { el.textContent = tag; el.classList.remove('opacity-0'); }
-      }
-      const releaseUrl = `https://github.com/${REPO}/releases/tag/${tag}`;
-      (document.getElementById('download-btn') as HTMLAnchorElement | null)?.setAttribute('href', releaseUrl);
-      (document.getElementById('cta-download-btn') as HTMLAnchorElement | null)?.setAttribute('href', releaseUrl);
+      // Show version badge in hero chip
+      const heroVer = document.getElementById('hero-version');
+      if (heroVer) { heroVer.textContent = tag; heroVer.classList.remove('opacity-0'); }
 
-      // Add download buttons for each known asset
+      // Detect platform and wire the primary download buttons
+      const platform = detectPlatform();
+      const platformMap: Record<string, { name: string; url: string }> = {
+        macos:   { name: 'macOS',   url: `${base}_aarch64.dmg` },
+        windows: { name: 'Windows', url: `${base}_x64-setup.exe` },
+        linux:   { name: 'Linux',   url: `${base}_amd64.AppImage` },
+      };
+
+      const detected = platform ? platformMap[platform] : null;
+      const primaryUrl = detected ? detected.url : `https://github.com/${REPO}/releases/tag/${tag}`;
+      const primaryLabel = detected
+        ? `${tag} for ${detected.name}`
+        : `${tag}`;
+
+      for (const [btnId, labelId] of [['download-btn', 'download-label'], ['cta-download-btn', 'cta-download-label']]) {
+        const btn = document.getElementById(btnId) as HTMLAnchorElement | null;
+        const lbl = document.getElementById(labelId);
+        if (btn) btn.href = primaryUrl;
+        if (lbl) { lbl.textContent = primaryLabel; lbl.classList.remove('opacity-0'); }
+      }
+
+      // Platform section: per-OS download buttons
       addBtn('dl-macos',   '.dmg',        `${base}_aarch64.dmg`);
       addBtn('dl-windows', '.msi',        `${base}_x64_en-US.msi`);
       addBtn('dl-windows', '.exe (NSIS)', `${base}_x64-setup.exe`);
