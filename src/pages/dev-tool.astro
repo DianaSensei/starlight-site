@@ -221,8 +221,35 @@ const platforms = [
 
 <script>
   const REPO = 'DianaSensei/developer-desktop-utils';
-  const RAW = `https://raw.githubusercontent.com/${REPO}/main/src-tauri/tauri.conf.json`;
+  const PRODUCT = 'DevTool';
+  // Source the version from the *published release*, not the source tree.
+  // `main`'s tauri.conf.json can be behind the latest tagged release, which
+  // showed a stale version and linked to download URLs that 404. The release's
+  // latest.json (Tauri updater manifest) is served from the releases CDN — it
+  // always reflects the newest release and isn't rate-limited like the API.
+  const UPDATER = `https://github.com/${REPO}/releases/latest/download/latest.json`;
+  const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
   const DL_BASE = `https://github.com/${REPO}/releases/download`;
+
+  // Resolve the latest release version ("0.3.0"). Try the updater manifest
+  // first, then fall back to the GitHub Releases API tag (e.g. "v0.3.0").
+  async function resolveVersion(): Promise<string | null> {
+    try {
+      const res = await fetch(UPDATER);
+      if (res.ok) {
+        const { version } = await res.json();
+        if (version) return String(version).replace(/^v/, '');
+      }
+    } catch { /* fall through to API */ }
+    try {
+      const res = await fetch(RELEASES_API);
+      if (res.ok) {
+        const { tag_name } = await res.json();
+        if (tag_name) return String(tag_name).replace(/^v/, '');
+      }
+    } catch { /* give up */ }
+    return null;
+  }
 
   const dlIcon = `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
   const btnClass = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
@@ -247,13 +274,11 @@ const platforms = [
 
   (async () => {
     try {
-      const res = await fetch(RAW);
-      if (!res.ok) return;
-      const { version, productName } = await res.json();
-      if (!version || !productName) return;
+      const version = await resolveVersion();
+      if (!version) return;
 
       const tag = `v${version}`;
-      const base = `${DL_BASE}/${tag}/${productName}_${version}`;
+      const base = `${DL_BASE}/${tag}/${PRODUCT}_${version}`;
 
       // Show version badge in hero chip
       const heroVer = document.getElementById('hero-version');
