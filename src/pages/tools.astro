@@ -3,39 +3,14 @@ import Layout from '../layouts/Layout.astro';
 
 const tools = [
   {
-    name: 'Cron Generator',
-    desc: 'Build cron expressions with a visual editor and get human-readable output. Useful for scheduling jobs without memorizing the syntax.',
-    tags: ['scheduling'],
+    name: 'Time Tracker',
+    desc: 'Clockify-style time suite: tracker, timesheet, calendar, schedule, expenses, and time off.',
+    tags: ['productivity', 'time'],
   },
   {
-    name: 'Text Transformer',
-    desc: 'Convert text between single-line, multi-line, array, and case formats. Supports camelCase, snake_case, PascalCase, kebab-case, and more.',
-    tags: ['text'],
-  },
-  {
-    name: 'Text Counter',
-    desc: 'Count characters, words, lines, and sentences in real time. Useful for checking lengths before submitting forms or writing docs.',
-    tags: ['text'],
-  },
-  {
-    name: 'Color Picker',
-    desc: 'Pick colors and instantly get HEX, RGB, and HSL values. Useful for designers and frontend developers.',
-    tags: ['design'],
-  },
-  {
-    name: 'Encoder / Decoder',
-    desc: 'Encode and decode using Base64, URL encoding, HTML entities, Hex, and Morse code — all offline.',
-    tags: ['encoding'],
-  },
-  {
-    name: 'Hash & Encrypt',
-    desc: 'Compute MD5, SHA-1, SHA-256, and SHA-512 hashes. AES encryption and decryption also available.',
-    tags: ['security', 'encoding'],
-  },
-  {
-    name: 'Date / Time',
-    desc: 'Convert Unix timestamps, diff dates, and format across timezones. Supports ISO 8601, RFC 2822, and human-readable formats.',
-    tags: ['time'],
+    name: 'API Client',
+    desc: 'Postman/Bruno-style HTTP workbench: collections, environments with variables, auth, pre/post-request scripts, tests & assertions, and Postman collection import/export.',
+    tags: ['network', 'development'],
   },
   {
     name: 'JSON Formatter',
@@ -43,9 +18,39 @@ const tools = [
     tags: ['data'],
   },
   {
-    name: 'JWT Debugger',
-    desc: 'Decode and inspect JWT header, payload, and signature. No server needed — works entirely in the app.',
-    tags: ['security'],
+    name: 'Deduplicate',
+    desc: 'Remove duplicate lines or array items. Preserves order, and lets you choose case-sensitive vs insensitive matching.',
+    tags: ['text'],
+  },
+  {
+    name: 'Text Transformer',
+    desc: 'Convert text between single-line, multi-line, array, and case formats. Supports camelCase, snake_case, PascalCase, kebab-case, and more.',
+    tags: ['text'],
+  },
+  {
+    name: 'SQL Formatter',
+    desc: 'Format and beautify SQL queries with keyword casing, space collapse, and clause line breaks.',
+    tags: ['data'],
+  },
+  {
+    name: 'Date / Time',
+    desc: 'Convert Unix timestamps, diff dates, and format across timezones. Supports ISO 8601, RFC 2822, and human-readable formats.',
+    tags: ['time'],
+  },
+  {
+    name: 'Generator',
+    desc: 'Generate UUIDs (v1/v4), random numbers in configurable ranges, and random text with custom alphabets.',
+    tags: ['generate'],
+  },
+  {
+    name: 'Encode·Hash·Encrypt',
+    desc: 'Encode/decode (Base64, URL, HTML entities, Hex, Morse…), hash (MD5, SHA-256, HMAC), and AES-256 encrypt/decrypt — all offline.',
+    tags: ['encoding', 'security'],
+  },
+  {
+    name: 'Text Counter',
+    desc: 'Count characters, words, lines, and sentences in real time. Useful for checking lengths before submitting forms or writing docs.',
+    tags: ['text'],
   },
   {
     name: 'Regex Tester',
@@ -58,24 +63,19 @@ const tools = [
     tags: ['text'],
   },
   {
-    name: 'QR Code',
-    desc: 'Generate QR codes for URLs, text, or contact cards. Supports custom frames and logo overlays.',
-    tags: ['generate'],
-  },
-  {
-    name: 'Markdown',
-    desc: 'Live markdown preview as you type. Supports CommonMark spec including tables, code blocks, and footnotes.',
-    tags: ['text'],
-  },
-  {
-    name: 'Deduplicate',
-    desc: 'Remove duplicate lines or array items. Preserves order, and lets you choose case-sensitive vs insensitive matching.',
-    tags: ['text'],
-  },
-  {
     name: 'Checksum',
     desc: 'Compute MD5 and SHA checksums for any file. Useful for verifying downloads.',
     tags: ['security'],
+  },
+  {
+    name: 'Cron Generator',
+    desc: 'Build cron expressions with a visual editor and get human-readable output. Useful for scheduling jobs without memorizing the syntax.',
+    tags: ['scheduling'],
+  },
+  {
+    name: 'QR Code',
+    desc: 'Generate QR codes for URLs, text, or contact cards. Supports custom frames and logo overlays.',
+    tags: ['generate'],
   },
   {
     name: 'Image ↔ Base64',
@@ -83,19 +83,54 @@ const tools = [
     tags: ['encoding', 'design'],
   },
   {
-    name: 'Generator',
-    desc: 'Generate UUIDs (v1/v4), random numbers in configurable ranges, and random text with custom alphabets.',
-    tags: ['generate'],
+    name: 'Color Picker',
+    desc: 'Pick colors and instantly get HEX, RGB, and HSL values. Useful for designers and frontend developers.',
+    tags: ['design'],
+  },
+  {
+    name: 'JWT Debugger',
+    desc: 'Decode and inspect JWT header, payload, and signature. No server needed — works entirely in the app.',
+    tags: ['security'],
+  },
+  {
+    name: 'Markdown',
+    desc: 'Live markdown preview as you type. Supports CommonMark spec including tables, code blocks, and footnotes.',
+    tags: ['text'],
+  },
+  {
+    name: 'Meeting Notes',
+    desc: 'Manage meeting minutes — search, create, and edit timed notes that sync with the Time Tracker calendar and export to Markdown.',
+    tags: ['productivity'],
+  },
+  {
+    name: 'Lucky Wheel',
+    desc: 'Spin a wheel of your own choices (one per line) to pick a random winner.',
+    tags: ['utility'],
+  },
+  {
+    name: 'Network Tools',
+    desc: 'DNS records (A, AAAA, CNAME, NS, TXT, SOA, SRV, CAA…), propagation, DNSSEC, what’s my IP, IP geolocation lookup, plus local network info.',
+    tags: ['network'],
+  },
+  {
+    name: 'Kafka Explorer',
+    desc: 'Browse topics, inspect partitions and offsets, manage consumer groups, and produce messages.',
+    tags: ['data', 'network'],
+  },
+  {
+    name: '2FA Authenticator',
+    desc: 'Generate TOTP and HOTP one-time passwords supporting SHA-1/256/512, 6/8 digits, and 30/60-second periods.',
+    tags: ['security'],
   },
 ];
 
 const allTags = ['all', ...Array.from(new Set(tools.flatMap(t => t.tags))).sort()];
 ---
 
-<Layout title="Tools — DevTool" description="All 17 developer utilities included in DevTool.">
+<Layout title="Tools — DevTool" description="All 24 developer utilities included in DevTool.">
   <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
     <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Tools</h1>
-    <p class="text-slate-500 dark:text-slate-400 mb-10">17 utilities, all running locally with no internet required.</p>
+    <p class="text-slate-500 dark:text-slate-400 mb-10">24 utilities, all running locally with no internet required.</p>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {tools.map(tool => (
