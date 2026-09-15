@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Static fallback — shown immediately and whenever the live catalog fetch
+// (client-side script below) fails or hasn't resolved yet. Keep this in sync
+// with developer-desktop-util-plugin's plugins/*/manifest.plugin.json when a
+// plugin is added/removed/renamed there; the live fetch fills in version and
+// exact manifest URLs on top of this, it doesn't replace the list of what
+// exists.
+const PLUGIN_REPO = 'DianaSensei/developer-desktop-util-plugin';
+
+const plugins = [
+  {
+    id: 'redis-client',
+    label: 'Redis',
+    description:
+      'Redis client: browse and edit keys (string, hash, list, set, sorted set), inspect server info, and run raw commands from a CLI console.',
+    keywords: ['redis', 'cache', 'key-value', 'cli', 'in-memory'],
+  },
+  {
+    id: 'rabbit-client',
+    label: 'RabbitMQ',
+    description:
+      'RabbitMQ management client: browse queues and exchanges, peek and publish messages, view bindings, connections, and cluster overview.',
+    keywords: ['rabbitmq', 'amqp', 'queue', 'exchange', 'message broker'],
+  },
+  {
+    id: 'container-manager',
+    label: 'Containers',
+    description:
+      'Manage containers, images, volumes, and networks across Docker-compatible runtimes (Docker Desktop, Colima, Rancher Desktop, OrbStack, Podman): live CPU/memory usage, resource limits, and Compose project grouping.',
+    keywords: ['docker', 'podman', 'container', 'compose', 'orbstack'],
+  },
+];
+---
+
+<Layout
+  title="Plugins — DevTool"
+  description="Optional DevTool plugins — Redis, RabbitMQ, and Container Manager — installable from Settings → Extensions."
+>
+  <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
+    <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Plugins</h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-2 max-w-2xl">
+      Not everyone needs a Redis client, a RabbitMQ client, or a container manager. These ship as
+      optional plugins instead of being built into the app — install only the ones you use from
+      <span class="font-medium text-slate-700 dark:text-slate-300">Settings → Extensions</span>
+      in DevTool.
+    </p>
+    <p class="text-sm text-slate-400 dark:text-slate-500 mb-10">
+      Source: <a href={`https://github.com/${PLUGIN_REPO}`} target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-300">{PLUGIN_REPO}</a>
+      <span id="catalog-status" class="ml-2"></span>
+    </p>
+
+    <div id="plugin-grid" class="grid sm:grid-cols-2 gap-4">
+      {plugins.map((p) => (
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30" data-plugin-id={p.id}>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <p class="font-medium text-slate-900 dark:text-white">{p.label}</p>
+            <span class="version-badge text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 whitespace-nowrap">loading…</span>
+          </div>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-3">{p.description}</p>
+          <div class="flex flex-wrap gap-1 mb-4">
+            {p.keywords.map((k) => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{k}</span>
+            ))}
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="copy-btn text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              data-kind="plugin"
+              disabled
+            >
+              Copy plugin manifest URL
+            </button>
+            <button
+              type="button"
+              class="copy-btn text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              data-kind="service"
+              disabled
+            >
+              Copy sidecar manifest URL
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-10 border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30 max-w-2xl">
+      <p class="font-medium text-slate-900 dark:text-white mb-2">How to install</p>
+      <ol class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed list-decimal list-inside space-y-1">
+        <li>In DevTool, open <span class="font-medium text-slate-700 dark:text-slate-300">Settings → Extensions</span>.</li>
+        <li>Paste the plugin's manifest URL above and install it.</li>
+        <li>If it needs a sidecar (all three here do), also paste the sidecar manifest URL and install that too.</li>
+        <li>Restart DevTool — installs apply on next launch.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script define:vars={{ PLUGIN_REPO }}>
+    // Live catalog.json (published per-release by the plugin repo's CI) fills
+    // in real version numbers and exact manifest URLs on top of the static
+    // fallback rendered above. A failed fetch (offline, rate-limited, no
+    // release published yet) just leaves the fallback cards as-is, minus the
+    // now-disabled copy buttons' loading label.
+    const CATALOG_URL = `https://github.com/${PLUGIN_REPO}/releases/latest/download/catalog.json`;
+
+    async function loadCatalog() {
+      const statusEl = document.getElementById('catalog-status');
+      try {
+        const res = await fetch(CATALOG_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const catalog = await res.json();
+        for (const p of catalog.plugins ?? []) {
+          const card = document.querySelector(`[data-plugin-id="${p.id}"]`);
+          if (!card) continue;
+          const badge = card.querySelector('.version-badge');
+          if (badge) badge.textContent = `v${p.version}`;
+          const pluginBtn = card.querySelector('button[data-kind="plugin"]');
+          if (pluginBtn && p.pluginManifestUrl) {
+            pluginBtn.disabled = false;
+            pluginBtn.addEventListener('click', () => copyToClipboard(pluginBtn, p.pluginManifestUrl));
+          }
+          const serviceBtn = card.querySelector('button[data-kind="service"]');
+          if (serviceBtn && p.serviceManifestUrl) {
+            serviceBtn.disabled = false;
+            serviceBtn.addEventListener('click', () => copyToClipboard(serviceBtn, p.serviceManifestUrl));
+          }
+        }
+        if (statusEl) statusEl.textContent = `· catalog v${catalog.version}`;
+      } catch (err) {
+        if (statusEl) {
+          statusEl.textContent = '· catalog unavailable, showing known plugins only';
+        }
+        document.querySelectorAll('.version-badge').forEach((el) => (el.textContent = ''));
+      }
+    }
+
+    async function copyToClipboard(button, text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => (button.textContent = original), 1500);
+      } catch {
+        // clipboard write can be denied — fail silently, same convention as the app itself
+      }
+    }
+
+    loadCatalog();
+  </script>
+</Layout>
