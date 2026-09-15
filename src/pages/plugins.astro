@@ -31,12 +31,19 @@ const plugins = [
       'Manage containers, images, volumes, and networks across Docker-compatible runtimes (Docker Desktop, Colima, Rancher Desktop, OrbStack, Podman): live CPU/memory usage, resource limits, and Compose project grouping.',
     keywords: ['docker', 'podman', 'container', 'compose', 'orbstack'],
   },
+  {
+    id: 'kafka-explorer',
+    label: 'Kafka Explorer',
+    description:
+      'Browse topics, inspect partitions and offsets, manage consumer groups, and produce messages.',
+    keywords: ['kafka', 'topic', 'partition', 'offset', 'consumer group', 'producer', 'message', 'broker', 'stream'],
+  },
 ];
 ---
 
 <Layout
   title="Plugins — DevTool"
-  description="Optional DevTool plugins — Redis, RabbitMQ, and Container Manager — installable from Settings → Extensions."
+  description="Optional DevTool plugins — Redis, RabbitMQ, Container Manager, and Kafka Explorer — installable from Settings → Extensions."
 >
   <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
     <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Plugins</h1>
@@ -91,7 +98,7 @@ const plugins = [
       <ol class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed list-decimal list-inside space-y-1">
         <li>In DevTool, open <span class="font-medium text-slate-700 dark:text-slate-300">Settings → Extensions</span>.</li>
         <li>Paste the plugin's manifest URL above and install it.</li>
-        <li>If it needs a sidecar (all three here do), also paste the sidecar manifest URL and install that too.</li>
+        <li>If it needs a sidecar (all four here do), also paste the sidecar manifest URL and install that too.</li>
         <li>Restart DevTool — installs apply on next launch.</li>
       </ol>
     </div>
