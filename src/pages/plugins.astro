@@ -53,9 +53,18 @@ const plugins = [
       <span class="font-medium text-slate-700 dark:text-slate-300">Settings → Extensions</span>
       in DevTool.
     </p>
-    <p class="text-sm text-slate-400 dark:text-slate-500 mb-10">
+    <p class="text-sm text-slate-400 dark:text-slate-500 mb-2">
       Source: <a href={`https://github.com/${PLUGIN_REPO}`} target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-300">{PLUGIN_REPO}</a>
       <span id="catalog-status" class="ml-2"></span>
+    </p>
+    <p class="text-sm text-slate-400 dark:text-slate-500 mb-10">
+      Don't have DevTool yet?
+      <a
+        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="underline hover:text-slate-600 dark:hover:text-slate-300"
+      >Download it first</a> — the Install button below opens the app.
     </p>
 
     <div id="plugin-grid" class="grid sm:grid-cols-2 gap-4">
@@ -70,6 +79,15 @@ const plugins = [
             {p.keywords.map((k) => (
               <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{k}</span>
             ))}
+          </div>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <a
+              class="install-link text-xs px-3 py-1.5 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed pointer-events-none transition-colors"
+              data-kind="install"
+              aria-disabled="true"
+            >
+              Install in DevTool
+            </a>
           </div>
           <div class="flex flex-wrap gap-2">
             <button
@@ -96,11 +114,14 @@ const plugins = [
     <div class="mt-10 border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30 max-w-2xl">
       <p class="font-medium text-slate-900 dark:text-white mb-2">How to install</p>
       <ol class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed list-decimal list-inside space-y-1">
-        <li>In DevTool, open <span class="font-medium text-slate-700 dark:text-slate-300">Settings → Extensions</span>.</li>
-        <li>Paste the plugin's manifest URL above and install it.</li>
-        <li>If it needs a sidecar (all four here do), also paste the sidecar manifest URL and install that too.</li>
+        <li>Make sure DevTool is installed (see the download link above).</li>
+        <li>Click <span class="font-medium text-slate-700 dark:text-slate-300">Install in DevTool</span> on a plugin — this opens the app straight at the install confirmation screen (Settings → Extensions), with the plugin's manifest (and its sidecar, if it has one) already queued up.</li>
+        <li>Review what it asks for and click Install to confirm — nothing installs without that confirmation, even from this link.</li>
         <li>Restart DevTool — installs apply on next launch.</li>
       </ol>
+      <p class="text-xs text-slate-400 dark:text-slate-500 mt-3">
+        The link not opening DevTool? Use the "Copy manifest URL" buttons instead and paste them into Settings → Extensions by hand.
+      </p>
     </div>
   </div>
 
@@ -132,6 +153,24 @@ const plugins = [
           if (serviceBtn && p.serviceManifestUrl) {
             serviceBtn.disabled = false;
             serviceBtn.addEventListener('click', () => copyToClipboard(serviceBtn, p.serviceManifestUrl));
+          }
+          // Một `devtool://install` link duy nhất mang cả hai manifest —
+          // SettingsExtensionInstaller (developer-desktop-utils) cài lần
+          // lượt plugin rồi tới sidecar, người dùng vẫn tự bấm "Install" ở
+          // mỗi bước xem trước. Xem docs/plugin-sdk/05-external-install.md.
+          const installLink = card.querySelector('a[data-kind="install"]');
+          if (installLink && p.pluginManifestUrl) {
+            const params = new URLSearchParams({ manifest: p.pluginManifestUrl });
+            if (p.serviceManifestUrl) params.set('service', p.serviceManifestUrl);
+            installLink.href = `devtool://install?${params.toString()}`;
+            installLink.removeAttribute('aria-disabled');
+            installLink.classList.remove(
+              'bg-slate-300', 'dark:bg-slate-700', 'text-slate-500', 'dark:text-slate-400',
+              'cursor-not-allowed', 'pointer-events-none',
+            );
+            installLink.classList.add(
+              'bg-slate-900', 'dark:bg-white', 'text-white', 'dark:text-slate-900', 'hover:opacity-90',
+            );
           }
         }
         if (statusEl) statusEl.textContent = `· catalog v${catalog.version}`;
