@@ -3,14 +3,17 @@ import Layout from '../layouts/Layout.astro';
 
 // Static fallback — shown immediately and whenever the live catalog fetch
 // (client-side script below) fails or hasn't resolved yet. Keep this in sync
-// with developer-desktop-util-plugin's plugins/*/manifest.plugin.json when a
+// with developer-desktop-miniapp's plugins/*/manifest.plugin.json when a
 // plugin is added/removed/renamed there; the live fetch fills in version and
 // exact manifest URLs on top of this, it doesn't replace the list of what
 // exists.
-const PLUGIN_REPO = 'DianaSensei/developer-desktop-util-plugin';
-// That repo has no `main` — this is its actual default branch, and the one
-// the release workflow commits a fresh catalog.json to on every release.
-const PLUGIN_BRANCH = 'claude/desktop-utils-plugin-arch-lmhjvh';
+const PLUGIN_REPO = 'DianaSensei/developer-desktop-miniapp';
+// Since the branch-per-plugin split, `main` is the skeleton branch — each
+// plugin releases from its own app/<id>/main branch, but every release
+// merges just its own entry into catalog.json on `main` without touching
+// the others (see that repo's README.md), so `main` is always the right
+// place to read the aggregated file from.
+const PLUGIN_BRANCH = 'main';
 
 const plugins = [
   {
