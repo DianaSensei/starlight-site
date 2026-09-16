@@ -154,7 +154,7 @@ const plugins = [
             serviceBtn.disabled = false;
             serviceBtn.addEventListener('click', () => copyToClipboard(serviceBtn, p.serviceManifestUrl));
           }
-          // Một `devtool://install` link duy nhất mang cả hai manifest —
+          // Một `desktop-devtool-app://install` link duy nhất mang cả hai manifest —
           // SettingsExtensionInstaller (developer-desktop-utils) cài lần
           // lượt plugin rồi tới sidecar, người dùng vẫn tự bấm "Install" ở
           // mỗi bước xem trước. Xem docs/plugin-sdk/05-external-install.md.
@@ -162,7 +162,7 @@ const plugins = [
           if (installLink && p.pluginManifestUrl) {
             const params = new URLSearchParams({ manifest: p.pluginManifestUrl });
             if (p.serviceManifestUrl) params.set('service', p.serviceManifestUrl);
-            installLink.href = `devtool://install?${params.toString()}`;
+            installLink.href = `desktop-devtool-app://install?${params.toString()}`;
             installLink.removeAttribute('aria-disabled');
             installLink.classList.remove(
               'bg-slate-300', 'dark:bg-slate-700', 'text-slate-500', 'dark:text-slate-400',
