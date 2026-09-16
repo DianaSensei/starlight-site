@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const movedTools = [
+  { name: 'Redis', desc: 'Redis client — key browser/editor, server info, raw command console.' },
+  { name: 'RabbitMQ', desc: 'Queue/exchange browser, message peek & publish, bindings, cluster overview.' },
+  { name: 'Container Manager', desc: 'Containers, images, volumes, networks across Docker-compatible runtimes.' },
+  { name: 'Kafka Explorer', desc: 'Topics, partitions/offsets, consumer groups, message production.' },
+];
+---
+
+<Layout
+  title="Plugin migration — DevTool"
+  description="Redis, RabbitMQ, Container Manager, and Kafka Explorer moved out of the base DevTool app into optional plugins. Here's what changed and how to get them back."
+>
+  <div class="max-w-3xl mx-auto px-4 pt-14 pb-20">
+    <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">
+      Redis, RabbitMQ, Container Manager & Kafka Explorer moved to plugins
+    </h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-2xl">
+      If you installed DevTool a while ago and one of these four tools just disappeared from your
+      sidebar after updating — this is why, and it's expected. Nothing broke.
+    </p>
+
+    <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30 mb-8">
+      <p class="font-medium text-slate-900 dark:text-white mb-3">What changed</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+        These four tools used to be compiled straight into the app. They've been pulled out into a
+        separate, optional-install repository so the base DevTool installer stays small — you only
+        download the tools you actually use.
+      </p>
+      <ul class="grid sm:grid-cols-2 gap-3">
+        {movedTools.map((t) => (
+          <li class="text-sm">
+            <span class="font-medium text-slate-700 dark:text-slate-300">{t.name}</span>
+            <p class="text-slate-500 dark:text-slate-400">{t.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30 mb-8">
+      <p class="font-medium text-slate-900 dark:text-white mb-2">Your saved connections were not carried over</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+        Each plugin now keeps its own data in an isolated storage location instead of the app's
+        shared store, so upgrading does not automatically migrate old connection details. You'll
+        need to re-enter them once, after installing the plugin — a one-time cost for keeping each
+        plugin's data separate going forward.
+      </p>
+    </div>
+
+    <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30 mb-10">
+      <p class="font-medium text-slate-900 dark:text-white mb-2">Everything else is unchanged</p>
+      <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+        API Client, Mock Server, Port Scanner, JSON/SQL formatters, JWT/Base64/Hash utilities, and
+        every other built-in tool are still bundled with the app exactly as before — this migration
+        only affects the four tools above.
+      </p>
+    </div>
+
+    <a
+      href={`${base}/plugins`}
+      class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium hover:opacity-90 transition-colors"
+    >
+      Reinstall the tools you need →
+    </a>
+  </div>
+</Layout>
