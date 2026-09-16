@@ -8,6 +8,9 @@ import Layout from '../layouts/Layout.astro';
 // exact manifest URLs on top of this, it doesn't replace the list of what
 // exists.
 const PLUGIN_REPO = 'DianaSensei/developer-desktop-util-plugin';
+// That repo has no `main` — this is its actual default branch, and the one
+// the release workflow commits a fresh catalog.json to on every release.
+const PLUGIN_BRANCH = 'claude/desktop-utils-plugin-arch-lmhjvh';
 
 const plugins = [
   {
@@ -125,13 +128,22 @@ const plugins = [
     </div>
   </div>
 
-  <script define:vars={{ PLUGIN_REPO }}>
+  <script define:vars={{ PLUGIN_REPO, PLUGIN_BRANCH }}>
     // Live catalog.json (published per-release by the plugin repo's CI) fills
     // in real version numbers and exact manifest URLs on top of the static
     // fallback rendered above. A failed fetch (offline, rate-limited, no
     // release published yet) just leaves the fallback cards as-is, minus the
     // now-disabled copy buttons' loading label.
-    const CATALOG_URL = `https://github.com/${PLUGIN_REPO}/releases/latest/download/catalog.json`;
+    //
+    // This intentionally does NOT point at the release asset
+    // (.../releases/latest/download/catalog.json): GitHub's release-asset
+    // storage never sends Access-Control-Allow-Origin, so a browser fetch()
+    // of it fails CORS from this site's origin — silently, straight into
+    // the catch block below — leaving every button stuck disabled forever.
+    // raw.githubusercontent.com does send that header, so the release
+    // workflow also commits catalog.json into the repo and this reads it
+    // from there instead.
+    const CATALOG_URL = `https://raw.githubusercontent.com/${PLUGIN_REPO}/${PLUGIN_BRANCH}/catalog.json`;
 
     async function loadCatalog() {
       const statusEl = document.getElementById('catalog-status');
