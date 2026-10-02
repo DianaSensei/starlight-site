@@ -6,17 +6,17 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
-  title="Home — Developer & Maker"
-  description="Developer passionate about open source, scalable systems, and building tools that run offline with zero compromise."
+  title="DianaSensei"
+  description="Open-source developer tools and notes on building software."
 >
   <!-- Welcome -->
   <section class="max-w-3xl mx-auto px-4 pt-20 pb-12">
     <p id="greeting" class="text-sm text-slate-500 dark:text-slate-400 font-mono mb-5"></p>
     <h1 class="text-4xl sm:text-5xl font-medium text-slate-900 dark:text-white mb-4 leading-tight">
-      Welcome to my space.
+      Hi, I build developer tools.
     </h1>
     <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
-      I build open-source tools and write about software engineering.
+      Mostly DevTool, a desktop app for the small jobs that come up every day. I also write about how it gets built.
     </p>
   </section>
 
@@ -43,9 +43,8 @@ const base = import.meta.env.BASE_URL;
         </svg>
       </div>
       <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-        A growing collection of offline developer utilities in one fast, clean desktop app —
-        text processing, encoding, JWT debugger, color tools, and more.
-        Runs entirely locally with no network, no telemetry, and no accounts required.
+        JSON and SQL formatting, an API client and mock server, JWT, regex, hashing, time tracking,
+        and more. Runs on your machine. No account, no telemetry.
       </p>
       <div class="flex flex-wrap gap-2">
         {['MIT', 'open source', 'offline'].map(t => (
@@ -62,7 +61,7 @@ const base = import.meta.env.BASE_URL;
       <a href={`${base}/blog`} class="text-xs text-brand-600 dark:text-brand-400 hover:underline">All posts →</a>
     </div>
     <div class="border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
-      <p class="text-sm text-slate-400 dark:text-slate-500">No posts yet — check back soon.</p>
+      <p class="text-sm text-slate-400 dark:text-slate-500">Nothing published yet.</p>
     </div>
   </section>
 
@@ -70,10 +69,9 @@ const base = import.meta.env.BASE_URL;
   <section class="max-w-3xl mx-auto px-4 pb-20">
     <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-6">About</h2>
     <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-      Passionate about open source and engineering software that lasts.
-      I design systems with scalability, high availability, and fault tolerance as first-class concerns —
-      grounded in solid OOP, proven design patterns, and zero-trust principles.
-      Everything I build aims to be trusted, resilient, and maintainable at any scale.
+      I care about open source and about software that keeps working. When I design a system I plan
+      for scale and for failure from the start, lean on well-known patterns, and assume zero trust.
+      The goal is code that other people can read, maintain, and rely on.
     </p>
   </section>
 </Layout>
