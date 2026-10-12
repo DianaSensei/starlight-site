@@ -1,25 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Tag from '../components/Tag.astro';
 import { tools } from '../data/tools';
-
-const allTags = ['all', ...Array.from(new Set(tools.flatMap(t => t.tags))).sort()];
+import { url } from '../config/site';
 ---
 
 <Layout title="Tools — DevTool" description={`The ${tools.length} tools built into DevTool.`}>
   <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
     <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Tools</h1>
-    <p class="text-slate-500 dark:text-slate-400 mb-10">{tools.length} tools ship with the app. More are available as <a href={`${import.meta.env.BASE_URL}/plugins`} class="underline hover:text-slate-700 dark:hover:text-slate-300">plugins</a>.</p>
+    <p class="text-slate-500 dark:text-slate-400 mb-10">
+      {tools.length} tools ship with the app. More are available as
+      <a href={url('/plugins')} class="underline hover:text-slate-700 dark:hover:text-slate-300">plugins</a>.
+    </p>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {tools.map(tool => (
+      {tools.map((tool) => (
         <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-slate-300 dark:hover:border-slate-700 transition-colors bg-white dark:bg-slate-900/30">
           <p class="font-medium text-slate-900 dark:text-white mb-2">{tool.name}</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-3">{tool.desc}</p>
-          <div class="flex flex-wrap gap-1">
-            {tool.tags.map(tag => (
-              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{tag}</span>
-            ))}
-          </div>
+          <div class="flex flex-wrap gap-1">{tool.tags.map((tag) => <Tag>{tag}</Tag>)}</div>
         </div>
       ))}
     </div>

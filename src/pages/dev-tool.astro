@@ -1,8 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DevToolLogo from '../components/DevToolLogo.astro';
-
+import SectionHeading from '../components/SectionHeading.astro';
+import DownloadIcon from '../components/icons/DownloadIcon.astro';
+import GitHubIcon from '../components/icons/GitHubIcon.astro';
 import { tools } from '../data/tools';
+import { APP_REPO_URL, LATEST_RELEASE_URL, RELEASES_URL } from '../config/site';
 
 const features = [
   { label: 'Works offline', desc: 'Your data stays on your machine. The network is used only when you send a request or run a lookup.' },
@@ -15,13 +18,13 @@ const features = [
   { label: 'Open to feedback', desc: 'Report a bug or ask for a feature on GitHub, from inside the app.' },
 ];
 
+// Icon paths are from Material Design Icons.
 const platforms = [
   {
     id: 'macos',
     name: 'macOS',
     versions: '11 (Big Sur)+',
     format: '.dmg · Apple Silicon',
-    // Apple logo (MDI)
     iconPath: 'M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.78,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.91,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z',
     bg: 'bg-slate-100 dark:bg-slate-800',
     iconClass: 'text-slate-700 dark:text-slate-200',
@@ -31,7 +34,6 @@ const platforms = [
     name: 'Windows',
     versions: '10 / 11',
     format: '.msi · .exe (NSIS)',
-    // Windows logo — 4-pane flag (MDI)
     iconPath: 'M3,12V6.75L9,5.43V11.91L3,12M20,3V11.75L11,10.9V5.21L20,3M3,13L9,13.09V19.9L3,18.75V13M20,13.25V22L11,20.84V13.1L20,13.25Z',
     bg: 'bg-blue-50 dark:bg-blue-900/30',
     iconClass: 'text-blue-600 dark:text-blue-400',
@@ -41,19 +43,22 @@ const platforms = [
     name: 'Linux',
     versions: 'Ubuntu 22.04+',
     format: '.AppImage · .deb',
-    // Tux penguin (MDI)
     iconPath: 'M14.62,8.35C14.2,8.63 13.33,9.32 13.13,9.57C12.93,9.82 13.2,10.26 13.33,10.43C13.55,10.72 13.87,11.25 14.54,11.67C14.62,11.72 14.71,11.76 14.81,11.77C14.97,11.78 15.08,11.72 15.17,11.67C15.84,11.25 16.16,10.72 16.38,10.43C16.51,10.26 16.78,9.82 16.58,9.57C16.38,9.32 15.51,8.63 15.09,8.35C14.97,8.27 14.85,8.23 14.73,8.23C14.62,8.23 14.5,8.27 14.38,8.35M10.09,8.35L9.58,8.35C9.19,8.27 9.08,8.23 8.96,8.23C8.85,8.23 8.72,8.27 8.61,8.35C8.19,8.63 7.32,9.32 7.12,9.57C6.92,9.82 7.19,10.26 7.32,10.43C7.54,10.72 7.86,11.25 8.53,11.67C8.62,11.72 8.73,11.76 8.83,11.77C8.99,11.78 9.1,11.72 9.19,11.67C9.86,11.25 10.18,10.72 10.4,10.43C10.53,10.26 10.8,9.82 10.6,9.57C10.4,9.32 9.53,8.63 9.11,8.35H10.09M12,2A5,5 0 0,0 7,7C7,8.42 7.58,9.71 8.5,10.65V13H7A2,2 0 0,0 5,15V16H4A1,1 0 0,0 3,17V19A1,1 0 0,0 4,20H20A1,1 0 0,0 21,19V17A1,1 0 0,0 20,16H19V15A2,2 0 0,0 17,13H15.5V10.65C16.42,9.71 17,8.42 17,7A5,5 0 0,0 12,2M15.5,15V18H8.5V15H15.5Z',
     bg: 'bg-yellow-50 dark:bg-yellow-900/20',
     iconClass: 'text-yellow-600 dark:text-yellow-400',
   },
 ];
+
+const primaryButton =
+  'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors';
+const secondaryButton =
+  'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-sm transition-colors';
 ---
 
 <Layout
   title="DevTool — Offline developer utilities"
   description={`DevTool puts ${tools.length} everyday developer tools in one desktop app. Runs offline, no account, no telemetry.`}
 >
-  <!-- Hero -->
   <section class="max-w-5xl mx-auto px-4 pt-12 pb-10 text-center">
     <div class="flex justify-center mb-4">
       <DevToolLogo size={56} class="rounded-2xl shadow-lg shadow-blue-900/20" />
@@ -61,7 +66,7 @@ const platforms = [
 
     <div class="inline-flex items-center gap-2 text-xs font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 px-3 py-1.5 rounded-full mb-4">
       <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
-      <span id="hero-version" class="opacity-0 transition-opacity duration-200"></span> · MIT License
+      <span data-latest-version class="opacity-0 transition-opacity duration-200"></span> · MIT License
     </div>
 
     <h1 class="text-3xl sm:text-4xl font-medium text-slate-900 dark:text-white mb-3 leading-tight">
@@ -74,25 +79,12 @@ const platforms = [
     </p>
 
     <div class="flex flex-wrap gap-3 justify-center mb-3">
-      <a
-        id="download-btn"
-        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Download <span id="download-label" class="opacity-0 transition-opacity duration-200"></span>
+      <a data-download href={LATEST_RELEASE_URL} class={primaryButton}>
+        <DownloadIcon />
+        Download <span data-download-label class="opacity-0 transition-opacity duration-200"></span>
       </a>
-      <a
-        href="https://github.com/DianaSensei/developer-desktop-utils"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-sm transition-colors"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
-        </svg>
+      <a href={APP_REPO_URL} target="_blank" rel="noopener noreferrer" class={secondaryButton}>
+        <GitHubIcon />
         View on GitHub
       </a>
     </div>
@@ -100,9 +92,8 @@ const platforms = [
     <p class="text-xs text-slate-400 dark:text-slate-500">macOS · Windows · Linux</p>
   </section>
 
-  <!-- Features -->
   <section class="max-w-5xl mx-auto px-4 pb-10">
-    <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Why DevTool</h2>
+    <SectionHeading class="mb-3">Why DevTool</SectionHeading>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
       {features.map(f => (
         <div class="flex gap-2.5 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/30">
@@ -118,14 +109,13 @@ const platforms = [
     </div>
   </section>
 
-  <!-- Tools -->
   <section class="max-w-5xl mx-auto px-4 pb-10">
-    <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">{tools.length} built-in tools</h2>
+    <SectionHeading class="mb-3">{tools.length} built-in tools</SectionHeading>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
       {tools.map(tool => (
         <div class="border border-slate-200 dark:border-slate-800 rounded-lg p-3 hover:border-slate-300 dark:hover:border-slate-700 transition-colors bg-white dark:bg-slate-900/30">
           <div class="flex items-center gap-2.5 mb-1.5">
-            <span class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg border bg-card border-slate-200 dark:border-slate-800">
+            <span class="w-8 h-8 shrink-0 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800">
               <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={tool.icon} />
             </span>
             <p class="text-sm font-medium text-slate-900 dark:text-white leading-tight">{tool.name}</p>
@@ -136,10 +126,9 @@ const platforms = [
     </div>
   </section>
 
-  <!-- Platform support -->
   <section class="border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
     <div class="max-w-5xl mx-auto px-4 py-10">
-      <h2 class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-4">Platform support</h2>
+      <SectionHeading class="mb-4">Platform support</SectionHeading>
       <div class="grid sm:grid-cols-3 gap-3 mb-5">
         {platforms.map(p => (
           <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-start gap-3">
@@ -151,7 +140,7 @@ const platforms = [
             <div class="flex-1 min-w-0">
               <p class="font-medium text-slate-900 dark:text-white leading-tight">{p.name}</p>
               <p class="text-xs text-slate-400 dark:text-slate-500 mb-1">{p.versions} · <span class="font-mono">{p.format}</span></p>
-              <div id={`dl-${p.id}`} class="flex flex-wrap gap-1.5 mt-2"></div>
+              <div data-assets={p.id} class="flex flex-wrap gap-1.5 mt-2"></div>
             </div>
           </div>
         ))}
@@ -168,127 +157,65 @@ const platforms = [
     </div>
   </section>
 
-  <!-- Download CTA -->
   <section class="max-w-5xl mx-auto px-4 py-12 text-center">
     <h2 class="text-2xl font-medium text-slate-900 dark:text-white mb-2">Try it</h2>
     <p class="text-slate-500 dark:text-slate-400 mb-5 text-sm">Free and open source. Available for macOS, Windows, and Linux.</p>
     <div class="flex flex-wrap gap-3 justify-center">
-      <a
-        id="cta-download-btn"
-        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-colors"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Download <span id="cta-download-label" class="opacity-0 transition-opacity duration-200"></span>
+      <a data-download href={LATEST_RELEASE_URL} class={primaryButton}>
+        <DownloadIcon />
+        Download <span data-download-label class="opacity-0 transition-opacity duration-200"></span>
       </a>
-      <a
-        href="https://github.com/DianaSensei/developer-desktop-utils/releases"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-sm transition-colors"
-      >
-        All releases →
-      </a>
+      <a href={RELEASES_URL} target="_blank" rel="noopener noreferrer" class={secondaryButton}>All releases →</a>
     </div>
   </section>
 </Layout>
 
 <script>
-  const REPO = 'DianaSensei/developer-desktop-utils';
-  const PRODUCT = 'DevTool';
-  // Source the version from the *published release*, not the source tree.
-  // `main`'s tauri.conf.json can be behind the latest tagged release, which
-  // showed a stale version and linked to download URLs that 404. The release's
-  // latest.json (Tauri updater manifest) is served from the releases CDN — it
-  // always reflects the newest release and isn't rate-limited like the API.
-  const UPDATER = `https://github.com/${REPO}/releases/latest/download/latest.json`;
-  const RELEASES_API = `https://api.github.com/repos/${REPO}/releases/latest`;
-  const DL_BASE = `https://github.com/${REPO}/releases/download`;
+  import {
+    PLATFORM_NAMES,
+    PRIMARY_ASSET_LABEL,
+    detectPlatform,
+    fetchLatestVersion,
+    releaseAssets,
+  } from '../lib/release';
+  import { RELEASES_URL } from '../config/site';
 
-  // Resolve the latest release version ("0.3.0"). Try the updater manifest
-  // first, then fall back to the GitHub Releases API tag (e.g. "v0.3.0").
-  async function resolveVersion(): Promise<string | null> {
-    try {
-      const res = await fetch(UPDATER);
-      if (res.ok) {
-        const { version } = await res.json();
-        if (version) return String(version).replace(/^v/, '');
-      }
-    } catch { /* fall through to API */ }
-    try {
-      const res = await fetch(RELEASES_API);
-      if (res.ok) {
-        const { tag_name } = await res.json();
-        if (tag_name) return String(tag_name).replace(/^v/, '');
-      }
-    } catch { /* give up */ }
-    return null;
+  const downloadIcon =
+    '<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  const assetButton =
+    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
+
+  function reveal(el: Element, text: string) {
+    el.textContent = text;
+    el.classList.remove('opacity-0');
   }
 
-  const dlIcon = `<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-  const btnClass = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors';
+  fetchLatestVersion().then((version) => {
+    if (!version) return;
+    const tag = `v${version}`;
+    const assets = releaseAssets(version);
 
-  function detectPlatform(): 'macos' | 'windows' | 'linux' | null {
-    const ua = navigator.userAgent;
-    if (/Mac/i.test(ua) && !/iPhone|iPad/i.test(ua)) return 'macos';
-    if (/Win/i.test(ua)) return 'windows';
-    if (/Linux/i.test(ua)) return 'linux';
-    return null;
-  }
+    document.querySelectorAll('[data-latest-version]').forEach((el) => reveal(el, tag));
 
-  function addBtn(containerId: string, label: string, url: string) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const a = document.createElement('a');
-    a.href = url;
-    a.className = btnClass;
-    a.innerHTML = `${dlIcon}<span>${label}</span>`;
-    container.appendChild(a);
-  }
+    const platform = detectPlatform();
+    const primary = platform
+      ? assets.find((a) => a.platform === platform && a.label === PRIMARY_ASSET_LABEL[platform])
+      : undefined;
+    document.querySelectorAll<HTMLAnchorElement>('a[data-download]').forEach((link) => {
+      link.href = primary?.url ?? `${RELEASES_URL}/tag/${tag}`;
+      const label = link.querySelector('[data-download-label]');
+      if (label) reveal(label, primary ? `${tag} for ${PLATFORM_NAMES[primary.platform]}` : tag);
+    });
 
-  (async () => {
-    try {
-      const version = await resolveVersion();
-      if (!version) return;
-
-      const tag = `v${version}`;
-      const base = `${DL_BASE}/${tag}/${PRODUCT}_${version}`;
-
-      // Show version badge in hero chip
-      const heroVer = document.getElementById('hero-version');
-      if (heroVer) { heroVer.textContent = tag; heroVer.classList.remove('opacity-0'); }
-
-      // Detect platform and wire the primary download buttons
-      const platform = detectPlatform();
-      const platformMap: Record<string, { name: string; url: string }> = {
-        macos:   { name: 'macOS',   url: `${base}_aarch64.dmg` },
-        windows: { name: 'Windows', url: `${base}_x64-setup.exe` },
-        linux:   { name: 'Linux',   url: `${base}_amd64.AppImage` },
-      };
-
-      const detected = platform ? platformMap[platform] : null;
-      const primaryUrl = detected ? detected.url : `https://github.com/${REPO}/releases/tag/${tag}`;
-      const primaryLabel = detected
-        ? `${tag} for ${detected.name}`
-        : `${tag}`;
-
-      for (const [btnId, labelId] of [['download-btn', 'download-label'], ['cta-download-btn', 'cta-download-label']]) {
-        const btn = document.getElementById(btnId) as HTMLAnchorElement | null;
-        const lbl = document.getElementById(labelId);
-        if (btn) btn.href = primaryUrl;
-        if (lbl) { lbl.textContent = primaryLabel; lbl.classList.remove('opacity-0'); }
-      }
-
-      // Platform section: per-OS download buttons
-      addBtn('dl-macos',   '.dmg',        `${base}_aarch64.dmg`);
-      addBtn('dl-windows', '.msi',        `${base}_x64_en-US.msi`);
-      addBtn('dl-windows', '.exe (NSIS)', `${base}_x64-setup.exe`);
-      addBtn('dl-linux',   '.AppImage',   `${base}_amd64.AppImage`);
-      addBtn('dl-linux',   '.deb',        `${base}_amd64.deb`);
-    } catch (e) {
-      console.warn('[DevTool]', e);
+    for (const asset of assets) {
+      const container = document.querySelector(`[data-assets="${asset.platform}"]`);
+      if (!container) continue;
+      const link = document.createElement('a');
+      link.href = asset.url;
+      link.className = assetButton;
+      link.innerHTML = downloadIcon;
+      link.append(Object.assign(document.createElement('span'), { textContent: asset.label }));
+      container.append(link);
     }
-  })();
+  });
 </script>

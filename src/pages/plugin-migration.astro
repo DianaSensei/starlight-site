@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const base = import.meta.env.BASE_URL;
+import { url } from '../config/site';
 
 const movedTools = [
   { name: 'Redis', desc: 'Browse and edit keys, view server info, run raw commands.' },
@@ -52,13 +51,13 @@ const movedTools = [
       <p class="font-medium text-slate-900 dark:text-white mb-2">Everything else is unchanged</p>
       <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
         API Client, Mock Server, Network Tools, the JSON and SQL formatters, JWT Debugger,
-        Encode·Hash·Encrypt, and every other <a href={`${base}/tools`} class="underline hover:text-slate-700 dark:hover:text-slate-300">built-in tool</a>
+        Encode·Hash·Encrypt, and every other <a href={url('/tools')} class="underline hover:text-slate-700 dark:hover:text-slate-300">built-in tool</a>
         still ship with the app. Only the four tools above moved.
       </p>
     </div>
 
     <a
-      href={`${base}/plugins`}
+      href={url('/plugins')}
       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium hover:opacity-90 transition-colors"
     >
       Reinstall the tools you need →

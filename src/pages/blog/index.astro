@@ -1,73 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-
-const base = import.meta.env.BASE_URL;
-
-// Exclude permanently hidden and draft posts at build time.
-// Future-dated and expired posts are included in the data but filtered client-side.
-const allPosts = (await getCollection('blog', ({ data }) => !data.draft && !data.hidden))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const postsJson = JSON.stringify(allPosts.map(p => ({
-  slug: p.slug,
-  title: p.data.title,
-  description: p.data.description,
-  pubDate: p.data.pubDate.toISOString(),
-  expiryDate: p.data.expiryDate ? p.data.expiryDate.toISOString() : null,
-  tags: p.data.tags,
-})));
+import PostList from '../../components/PostList.astro';
 ---
 
 <Layout title="Blog — DevTool" description="Notes on Tauri, developer tooling, and building desktop apps.">
   <div class="max-w-5xl mx-auto px-4 pt-14 pb-20">
     <h1 class="text-3xl font-medium text-slate-900 dark:text-white mb-2">Blog</h1>
     <p class="text-slate-500 dark:text-slate-400 mb-10">Notes on Tauri, developer tooling, and building desktop apps.</p>
-
-    <div id="posts-list"></div>
-    <div id="posts-empty" class="hidden border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-10 text-center text-slate-400 dark:text-slate-500">
-      Nothing published yet.
-    </div>
+    <PostList />
   </div>
 </Layout>
-
-<script define:vars={{ postsJson, base }}>
-  const posts = JSON.parse(postsJson);
-  const now = new Date();
-
-  const visible = posts.filter(p => {
-    const pub = new Date(p.pubDate);
-    const exp = p.expiryDate ? new Date(p.expiryDate) : null;
-    return pub <= now && (!exp || exp > now);
-  });
-
-  const list = document.getElementById('posts-list');
-  const empty = document.getElementById('posts-empty');
-
-  if (visible.length === 0) {
-    empty.classList.remove('hidden');
-  } else {
-    list.innerHTML = `<div class="divide-y divide-slate-200 dark:divide-slate-800">${
-      visible.map(p => {
-        const date = new Date(p.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const tags = p.tags.map(t => `<span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${t}</span>`).join('');
-        return `
-          <article class="py-6 group">
-            <a href="${base}/blog/${p.slug}" class="block">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h2 class="text-base font-medium text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors mb-1">${p.title}</h2>
-                  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-2">${p.description}</p>
-                  <div class="flex items-center gap-3">
-                    <time class="text-xs text-slate-400 dark:text-slate-500">${date}</time>
-                    <div class="flex gap-1">${tags}</div>
-                  </div>
-                </div>
-                <span class="text-slate-300 dark:text-slate-600 group-hover:text-brand-500 transition-colors text-lg mt-0.5 shrink-0">→</span>
-              </div>
-            </a>
-          </article>`;
-      }).join('')
-    }</div>`;
-  }
-</script>
