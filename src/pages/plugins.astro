@@ -1,50 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Tag from '../components/Tag.astro';
+import { plugins } from '../data/plugins';
+import { LATEST_RELEASE_URL, PLUGIN_REPO, PLUGIN_REPO_URL, url } from '../config/site';
 
-// Static fallback — shown immediately and whenever the live catalog fetch
-// (client-side script below) fails or hasn't resolved yet. Keep this in sync
-// with developer-desktop-miniapp's plugins/*/manifest.plugin.json when a
-// plugin is added/removed/renamed there; the live fetch fills in version and
-// exact manifest URLs on top of this, it doesn't replace the list of what
-// exists.
-const PLUGIN_REPO = 'DianaSensei/developer-desktop-miniapp';
-// Since the branch-per-plugin split, `main` is the skeleton branch — each
-// plugin releases from its own app/<id>/main branch, but every release
-// merges just its own entry into catalog.json on `main` without touching
-// the others (see that repo's README.md), so `main` is always the right
-// place to read the aggregated file from.
-const PLUGIN_BRANCH = 'main';
-
-const plugins = [
-  {
-    id: 'redis-client',
-    label: 'Redis',
-    description:
-      'Redis client: browse and edit keys (string, hash, list, set, sorted set), inspect server info, and run raw commands from a CLI console.',
-    keywords: ['redis', 'cache', 'key-value', 'cli', 'in-memory'],
-  },
-  {
-    id: 'rabbit-client',
-    label: 'RabbitMQ',
-    description:
-      'RabbitMQ management client: browse queues and exchanges, peek and publish messages, view bindings, connections, and cluster overview.',
-    keywords: ['rabbitmq', 'amqp', 'queue', 'exchange', 'message broker'],
-  },
-  {
-    id: 'container-manager',
-    label: 'Containers',
-    description:
-      'Manage containers, images, volumes, and networks across Docker-compatible runtimes (Docker Desktop, Colima, Rancher Desktop, OrbStack, Podman): live CPU/memory usage, resource limits, and Compose project grouping.',
-    keywords: ['docker', 'podman', 'container', 'compose', 'orbstack'],
-  },
-  {
-    id: 'kafka-explorer',
-    label: 'Kafka Explorer',
-    description:
-      'Browse topics, inspect partitions and offsets, manage consumer groups, and produce messages.',
-    keywords: ['kafka', 'topic', 'partition', 'offset', 'consumer group', 'producer', 'message', 'broker', 'stream'],
-  },
-];
+const secondaryButton =
+  'copy-btn text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
+const mutedLink = 'underline hover:text-slate-600 dark:hover:text-slate-300';
 ---
 
 <Layout
@@ -60,61 +22,39 @@ const plugins = [
       in DevTool.
     </p>
     <p class="text-sm text-slate-400 dark:text-slate-500 mb-2">
-      Had these built in before? Read <a href={`${import.meta.env.BASE_URL}/plugin-migration`} class="underline hover:text-slate-600 dark:hover:text-slate-300">what changed</a>.
+      Had these built in before? Read <a href={url('/plugin-migration')} class={mutedLink}>what changed</a>.
     </p>
     <p class="text-sm text-slate-400 dark:text-slate-500 mb-2">
-      Source: <a href={`https://github.com/${PLUGIN_REPO}`} target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-300">{PLUGIN_REPO}</a>
+      Source: <a href={PLUGIN_REPO_URL} target="_blank" rel="noopener noreferrer" class={mutedLink}>{PLUGIN_REPO}</a>
       <span id="catalog-status" class="ml-2"></span>
     </p>
     <p class="text-sm text-slate-400 dark:text-slate-500 mb-10">
       Don't have DevTool yet?
-      <a
-        href="https://github.com/DianaSensei/developer-desktop-utils/releases/latest"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="underline hover:text-slate-600 dark:hover:text-slate-300"
-      >Download it first</a>. The Install button opens the app.
+      <a href={LATEST_RELEASE_URL} target="_blank" rel="noopener noreferrer" class={mutedLink}>Download it first</a>.
+      The Install button opens the app.
     </p>
 
-    <div id="plugin-grid" class="grid sm:grid-cols-2 gap-4">
+    <div class="grid sm:grid-cols-2 gap-4">
       {plugins.map((p) => (
         <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-white dark:bg-slate-900/30" data-plugin-id={p.id}>
           <div class="flex items-start justify-between gap-2 mb-2">
             <p class="font-medium text-slate-900 dark:text-white">{p.label}</p>
-            <span class="version-badge text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 whitespace-nowrap">loading…</span>
+            <span data-version><Tag>loading…</Tag></span>
           </div>
           <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-3">{p.description}</p>
-          <div class="flex flex-wrap gap-1 mb-4">
-            {p.keywords.map((k) => (
-              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">{k}</span>
-            ))}
-          </div>
+          <div class="flex flex-wrap gap-1 mb-4">{p.keywords.map((k) => <Tag>{k}</Tag>)}</div>
           <div class="flex flex-wrap gap-2 mb-2">
             <a
-              class="install-link text-xs px-3 py-1.5 rounded-lg bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed pointer-events-none transition-colors"
-              data-kind="install"
+              data-install
               aria-disabled="true"
+              class="text-xs px-3 py-1.5 rounded-lg transition-colors bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed pointer-events-none aria-[disabled=false]:bg-slate-900 aria-[disabled=false]:dark:bg-white aria-[disabled=false]:text-white aria-[disabled=false]:dark:text-slate-900 aria-[disabled=false]:cursor-pointer aria-[disabled=false]:pointer-events-auto aria-[disabled=false]:hover:opacity-90"
             >
               Install in DevTool
             </a>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="copy-btn text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              data-kind="plugin"
-              disabled
-            >
-              Copy plugin manifest URL
-            </button>
-            <button
-              type="button"
-              class="copy-btn text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              data-kind="service"
-              disabled
-            >
-              Copy sidecar manifest URL
-            </button>
+            <button type="button" class={secondaryButton} data-copy="pluginManifestUrl" disabled>Copy plugin manifest URL</button>
+            <button type="button" class={secondaryButton} data-copy="serviceManifestUrl" disabled>Copy sidecar manifest URL</button>
           </div>
         </div>
       ))}
@@ -133,84 +73,52 @@ const plugins = [
       </p>
     </div>
   </div>
-
-  <script define:vars={{ PLUGIN_REPO, PLUGIN_BRANCH }}>
-    // Live catalog.json (published per-release by the plugin repo's CI) fills
-    // in real version numbers and exact manifest URLs on top of the static
-    // fallback rendered above. A failed fetch (offline, rate-limited, no
-    // release published yet) just leaves the fallback cards as-is, minus the
-    // now-disabled copy buttons' loading label.
-    //
-    // This intentionally does NOT point at the release asset
-    // (.../releases/latest/download/catalog.json): GitHub's release-asset
-    // storage never sends Access-Control-Allow-Origin, so a browser fetch()
-    // of it fails CORS from this site's origin — silently, straight into
-    // the catch block below — leaving every button stuck disabled forever.
-    // raw.githubusercontent.com does send that header, so the release
-    // workflow also commits catalog.json into the repo and this reads it
-    // from there instead.
-    const CATALOG_URL = `https://raw.githubusercontent.com/${PLUGIN_REPO}/${PLUGIN_BRANCH}/catalog.json`;
-
-    async function loadCatalog() {
-      const statusEl = document.getElementById('catalog-status');
-      try {
-        const res = await fetch(CATALOG_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const catalog = await res.json();
-        for (const p of catalog.plugins ?? []) {
-          const card = document.querySelector(`[data-plugin-id="${p.id}"]`);
-          if (!card) continue;
-          const badge = card.querySelector('.version-badge');
-          if (badge) badge.textContent = `v${p.version}`;
-          const pluginBtn = card.querySelector('button[data-kind="plugin"]');
-          if (pluginBtn && p.pluginManifestUrl) {
-            pluginBtn.disabled = false;
-            pluginBtn.addEventListener('click', () => copyToClipboard(pluginBtn, p.pluginManifestUrl));
-          }
-          const serviceBtn = card.querySelector('button[data-kind="service"]');
-          if (serviceBtn && p.serviceManifestUrl) {
-            serviceBtn.disabled = false;
-            serviceBtn.addEventListener('click', () => copyToClipboard(serviceBtn, p.serviceManifestUrl));
-          }
-          // Một `desktop-devtool-app://install` link duy nhất mang cả hai manifest —
-          // SettingsExtensionInstaller (developer-desktop-utils) cài lần
-          // lượt plugin rồi tới sidecar, người dùng vẫn tự bấm "Install" ở
-          // mỗi bước xem trước. Xem docs/plugin-sdk/05-external-install.md.
-          const installLink = card.querySelector('a[data-kind="install"]');
-          if (installLink && p.pluginManifestUrl) {
-            const params = new URLSearchParams({ manifest: p.pluginManifestUrl });
-            if (p.serviceManifestUrl) params.set('service', p.serviceManifestUrl);
-            installLink.href = `desktop-devtool-app://install?${params.toString()}`;
-            installLink.removeAttribute('aria-disabled');
-            installLink.classList.remove(
-              'bg-slate-300', 'dark:bg-slate-700', 'text-slate-500', 'dark:text-slate-400',
-              'cursor-not-allowed', 'pointer-events-none',
-            );
-            installLink.classList.add(
-              'bg-slate-900', 'dark:bg-white', 'text-white', 'dark:text-slate-900', 'hover:opacity-90',
-            );
-          }
-        }
-        if (statusEl) statusEl.textContent = `· catalog v${catalog.version}`;
-      } catch (err) {
-        if (statusEl) {
-          statusEl.textContent = '· catalog unavailable, showing known plugins only';
-        }
-        document.querySelectorAll('.version-badge').forEach((el) => (el.textContent = ''));
-      }
-    }
-
-    async function copyToClipboard(button, text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        const original = button.textContent;
-        button.textContent = 'Copied!';
-        setTimeout(() => (button.textContent = original), 1500);
-      } catch {
-        // clipboard write can be denied — fail silently, same convention as the app itself
-      }
-    }
-
-    loadCatalog();
-  </script>
 </Layout>
+
+<script>
+  import { loadCatalog, installLink, type CatalogEntry } from '../lib/catalog';
+
+  async function copy(button: HTMLButtonElement, text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = button.textContent;
+      button.textContent = 'Copied!';
+      setTimeout(() => (button.textContent = original), 1500);
+    } catch {
+      // Clipboard access can be denied; the URL is still in the catalog.
+    }
+  }
+
+  function applyEntry(card: HTMLElement, entry: CatalogEntry) {
+    const version = card.querySelector('[data-version] span');
+    if (version) version.textContent = `v${entry.version}`;
+
+    for (const button of card.querySelectorAll<HTMLButtonElement>('button[data-copy]')) {
+      const value = entry[button.dataset.copy as 'pluginManifestUrl' | 'serviceManifestUrl'];
+      if (!value) continue;
+      button.disabled = false;
+      button.addEventListener('click', () => copy(button, value));
+    }
+
+    const link = card.querySelector<HTMLAnchorElement>('a[data-install]');
+    if (link && entry.pluginManifestUrl) {
+      link.href = installLink(entry);
+      link.setAttribute('aria-disabled', 'false');
+    }
+  }
+
+  const status = document.getElementById('catalog-status');
+
+  loadCatalog()
+    .then((catalog) => {
+      for (const entry of catalog.plugins) {
+        const card = document.querySelector<HTMLElement>(`[data-plugin-id="${CSS.escape(entry.id)}"]`);
+        if (card) applyEntry(card, entry);
+      }
+      if (status) status.textContent = `· catalog v${catalog.version}`;
+    })
+    .catch(() => {
+      if (status) status.textContent = '· catalog unavailable, showing known plugins only';
+      document.querySelectorAll('[data-version]').forEach((el) => el.remove());
+    });
+</script>

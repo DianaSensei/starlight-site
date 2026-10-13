@@ -4,11 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Triggered by a `repository_dispatch` event from the DevTool repo on new release.
-  # In developer-desktop-utils, add a release workflow step that calls:
-  #   POST /repos/DianaSensei/devtool-site/dispatches  { "event_type": "devtool-release" }
-  repository_dispatch:
-    types: [devtool-release]
 
 permissions:
   contents: read

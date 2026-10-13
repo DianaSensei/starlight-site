@@ -1,0 +1,64 @@
+---
+import Tag from './Tag.astro';
+import { formatDate, getPublishedPosts } from '../lib/posts';
+import { url } from '../config/site';
+
+interface Props {
+  /** Show at most this many visible posts. */
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+const posts = await getPublishedPosts();
+---
+
+<div data-post-list data-limit={limit ?? ''}>
+  <div class="divide-y divide-slate-200 dark:divide-slate-800">
+    {posts.map((post) => (
+      <article
+        class="hidden py-6 group"
+        data-pub={post.data.pubDate.toISOString()}
+        data-exp={post.data.expiryDate?.toISOString() ?? ''}
+      >
+        <a href={url(`/blog/${post.slug}`)} class="block">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-base font-medium text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors mb-1">
+                {post.data.title}
+              </h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-2">{post.data.description}</p>
+              <div class="flex items-center gap-3">
+                <time class="text-xs text-slate-400 dark:text-slate-500">{formatDate(post.data.pubDate)}</time>
+                <div class="flex gap-1">{post.data.tags.map((tag) => <Tag>{tag}</Tag>)}</div>
+              </div>
+            </div>
+            <span class="text-slate-300 dark:text-slate-600 group-hover:text-brand-500 transition-colors text-lg mt-0.5 shrink-0">→</span>
+          </div>
+        </a>
+      </article>
+    ))}
+  </div>
+  <div data-empty class="border border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-10 text-center text-sm text-slate-400 dark:text-slate-500">
+    Nothing published yet.
+  </div>
+</div>
+
+<script>
+  const now = Date.now();
+
+  for (const list of document.querySelectorAll<HTMLElement>('[data-post-list]')) {
+    const limit = Number(list.dataset.limit) || Infinity;
+    let shown = 0;
+
+    for (const article of list.querySelectorAll<HTMLElement>('article')) {
+      const published = Date.parse(article.dataset.pub ?? '') <= now;
+      const expiry = article.dataset.exp ? Date.parse(article.dataset.exp) : Infinity;
+      if (published && expiry > now && shown < limit) {
+        article.classList.remove('hidden');
+        shown++;
+      }
+    }
+
+    if (shown > 0) list.querySelector('[data-empty]')?.classList.add('hidden');
+  }
+</script>

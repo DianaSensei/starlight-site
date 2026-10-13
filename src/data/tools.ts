@@ -1,6 +1,5 @@
-// Built-in tools, in the app's default sidebar order.
-// Source of truth: developer-desktop-utils/src/plugins/*/plugin.ts (label, description, order).
-// Update this list when a tool is added, removed, or renamed there.
+// Built-in tools in the app's default sidebar order. Mirrors
+// developer-desktop-utils/src/plugins/*/plugin.ts (label, description, order).
 export interface Tool {
   name: string;
   desc: string;
